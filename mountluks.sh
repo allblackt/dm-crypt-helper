@@ -32,6 +32,15 @@ if [ ! -d $mountpoint ]; then
 fi
 
 cryptsetup luksOpen $1 $volume_name
+if [ $? != 0 ]; then
+    printf "There was a problem opening the container located at %s.\n" $container
+    exit 1
+fi
+
 mount "/dev/mapper/$volume_name" $mountpoint
+if [ $? != 0 ]; then
+    echo "There was a problem mounting the volume /dev/mapper/%s at %s.\n" $volume_name $mountpoint
+    exit 1
+fi
 
 echo "Mounted $volume_name at mount point $mountpoint"
