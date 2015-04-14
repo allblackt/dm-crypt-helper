@@ -11,7 +11,13 @@ ROOT_UID="0"
 
 if [ "$is_help" == "h" ]; then
     echo "Usage:"
-    echo $0' <CONTAINER> <MOUNT_POINT>'
+    echo 'mountluks.sh <CONTAINER> <MOUNT_POINT>'
+    exit 0
+fi
+
+if [ -z $container ] || [ -z $mountpoint ]; then
+    echo "CONTAINER and MOUNT_POINT can't be empty!"
+    echo 'mountluks.sh <CONTAINER> <MOUNT_POINT>'
     exit 0
 fi
 
@@ -39,7 +45,8 @@ fi
 
 mount "/dev/mapper/$volume_name" $mountpoint
 if [ $? != 0 ]; then
-    echo "There was a problem mounting the volume /dev/mapper/%s at %s.\n" $volume_name $mountpoint
+    printf "There was a problem mounting the volume /dev/mapper/%s at %s.\n" $volume_name $mountpoint
+    cryptsetup luksClose $volume_name
     exit 1
 fi
 
